@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "No Sugar Translator",
+  "version": "1.0",
+  "description": "Automatically translates chat messages between Chinese, English, and Indonesian",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://*.chat/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/16x16.png",
+      "32": "icons/32x32.png",
+      "48": "icons/48x48.png",
+      "128": "icons/128x128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.chat/*"
+      ],
+      "js": [
+        "content-script/utils.js",
+        "content-script/translation.js",
+        "content-script/ui.js",
+        "content-script/observers.js",
+        "content-script/main.js"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/16x16.png",
+    "32": "icons/32x32.png",
+    "48": "icons/48x48.png",
+    "128": "icons/128x128.png"
+  }
+}

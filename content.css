@@ -1,0 +1,95 @@
+/* content.css */
+
+/* Style for translation buttons */
+#translation-buttons-container button {
+  min-width: 30px !important;
+  font-size: 12px !important;
+  font-weight: bold !important;
+  color: #303030 !important;
+  background-color: #f5f5f5 !important;
+  border: 1px solid #e0e0e0 !important;
+  transition: background-color 0.2s !important;
+}
+
+#translation-buttons-container button:hover {
+  background-color: #e0e0e0 !important;
+}
+
+#translation-buttons-container button.active {
+  background-color: #4285f4 !important;
+  color: white !important;
+  border-color: #3367d6 !important;
+}
+
+/* Translation preview container */
+#translation-preview {
+  width: 100%;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s;
+}
+
+/* Translation preview container */
+#translation-preview {
+  width: 100%;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Keyboard shortcut styling */
+#translation-preview kbd {
+  background: #f1f1f1;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0 3px;
+  font-family: monospace;
+  font-size: 11px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Translation preview content */
+#translation-preview div:last-child {
+  padding: 6px 8px;
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #e1e8ed;
+  max-height: 150px;
+  overflow-y: auto;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+/* Close button hover effect */
+#translation-preview button:hover {
+  color: #111 !important;
+}
+
+/* Animation for preview */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Make sure the translation container looks nice */
+.translation-container {
+  animation: slideIn 0.3s;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
