@@ -63,7 +63,7 @@ I may update this Privacy Policy to reflect improvements or changes in functiona
 
 ## 9. Contact Information
 If you have any questions about this Privacy Policy or the **NoSugar** extension, please contact me at:  
-📧 **fajarlubis.lubisfajar@gmail.com**
+📧 **fajardev123@gmail.com**
 
 ---
 
