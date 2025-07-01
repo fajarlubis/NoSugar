@@ -47,19 +47,24 @@ var UI = (function () {
     // Create translation container
     const translationContainer = document.createElement("div");
     translationContainer.className = "translation-container";
-    translationContainer.style.marginTop = settings.translationPlacement ===
-      "bottom"
-        ? "8px"
-        : "0";
+    // Default margin for bottom placement
+    translationContainer.style.marginTop =
+      settings.translationPlacement === "bottom" ? "8px" : "0";
     translationContainer.style.padding = "6px 8px";
     translationContainer.style.fontSize = "13px";
 
     // Try to mirror the message bubble's style
     const computed = window.getComputedStyle(messageBody);
-    translationContainer.style.backgroundColor =
-      computed.backgroundColor || "#f5f7f9";
-    translationContainer.style.borderRadius =
-      computed.borderRadius || "4px";
+    // Fallback to sane defaults if style values are empty or transparent
+    const bgColor = computed.backgroundColor &&
+      computed.backgroundColor !== "rgba(0, 0, 0, 0)"
+        ? computed.backgroundColor
+        : "#f5f7f9";
+    const radius = computed.borderRadius && computed.borderRadius !== "0px"
+        ? computed.borderRadius
+        : "4px";
+    translationContainer.style.backgroundColor = bgColor;
+    translationContainer.style.borderRadius = radius;
     translationContainer.style.borderLeft = "3px solid #4285f4";
 
     // Add initial loading indicator
@@ -88,12 +93,12 @@ var UI = (function () {
       }
       wrapper.appendChild(translationContainer);
     } else {
-      // Append translation container after the message body (default)
-      if (messageBody.parentNode) {
-        messageBody.parentNode.insertBefore(
-          translationContainer,
-          messageBody.nextSibling
-        );
+      // Place translation container inside the message bubble
+      const readIndicator = messageBody.querySelector('.read-indicator-wrapper');
+      if (readIndicator) {
+        messageBody.insertBefore(translationContainer, readIndicator);
+      } else {
+        messageBody.appendChild(translationContainer);
       }
     }
 
