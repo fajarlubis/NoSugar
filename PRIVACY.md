@@ -13,7 +13,7 @@ By using **NoSugar**, you agree to the terms outlined in this Privacy Policy. Si
 ## 2. Data I Collect
 **NoSugar** collects minimal data necessary for its functionality. Specifically, the extension may collect the following:
 
-- **Chat Message Content:** When you use the translation feature, the content of the selected message is sent to the **Google Cloud Translate API** for translation purposes. No messages are stored or logged by me or the extension itself.
+- **Chat Message Content:** When you use the translation feature, the content of the selected message is sent to the **NoSugar translation server** (or your configured server) for translation. No messages are stored or logged by me or the extension itself.
 - **User Preferences:** Settings like preferred language and translation preferences are stored locally in your browser using Chrome's `storage` API.
 
 **No personal information** such as names, emails, or passwords is collected or stored.
@@ -23,7 +23,7 @@ By using **NoSugar**, you agree to the terms outlined in this Privacy Policy. Si
 ## 3. How Your Data is Used
 The data collected is used solely for the following purposes:
 
-- **Message Translation:** The extension sends selected chat messages to the **Google Cloud Translate API** for translation.
+- **Message Translation:** The extension sends selected chat messages to the configured translation server for translation.
 - **User Preferences Management:** Stored preferences ensure a consistent and personalized experience.
 
 I do **not** use your data for marketing, advertising, or tracking purposes.
@@ -31,14 +31,14 @@ I do **not** use your data for marketing, advertising, or tracking purposes.
 ---
 
 ## 4. Data Sharing
-I do **not** sell, rent, or trade your data. However, to perform translations, your selected text is sent to the **Google Cloud Translate API**. 
+I do **not** sell, rent, or trade your data. However, to perform translations, your selected text is sent to the configured translation server.
 
-For more information about Google Cloud's data handling practices, visit: [Google Cloud Privacy Policy](https://cloud.google.com/terms/cloud-privacy-notice)
+If you use the default server provided by me, standard server logs may record basic request information for operational purposes. No message content is retained.
 
 ---
 
 ## 5. Data Storage and Security
-- **Message Content:** Messages sent to the Google Cloud Translate API are **not** stored by me or the extension itself.
+- **Message Content:** Messages sent to the translation server are **not** stored by me or the extension itself.
 - **User Preferences:** Preferences are stored locally within your Chrome browser via the Chrome `storage` API. This data is never transmitted externally.
 
 While I take reasonable measures to ensure data security, please remember that no method of transmission over the internet or electronic storage is 100% secure.

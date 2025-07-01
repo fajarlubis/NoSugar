@@ -1,6 +1,6 @@
 // content-script/main.js
 (function () {
-  // Show notification that Google API key is required
+  // Show notification that authorization code is required
   function showAPIKeyNotification() {
     // Check if notification already exists
     if (document.getElementById("api-key-notification")) return;
@@ -20,9 +20,9 @@
     notification.style.maxWidth = "300px";
 
     notification.innerHTML = `
-      <div style="font-weight: bold; margin-bottom: 5px;">Google API Key Required</div>
-      <div style="margin-bottom: 10px;">Please set your Google Cloud Translation API key in the extension settings.</div>
-      <div style="font-size: 12px;">Click the extension icon to add your API key.</div>
+      <div style="font-weight: bold; margin-bottom: 5px;">Authorization Required</div>
+      <div style="margin-bottom: 10px;">Please set the server authorization code in the extension settings.</div>
+      <div style="font-size: 12px;">Click the extension icon to add your code.</div>
       <button id="dismiss-notification" style="margin-top: 10px; padding: 5px 10px; background: white; color: #f44336; border: none; border-radius: 3px; cursor: pointer;">Dismiss</button>
     `;
 
@@ -69,8 +69,8 @@
 
       // If translation is turned on, initialize the translator
       if (settings.translationMode !== "off") {
-        if (!settings.apiKey) {
-          // Show a notification that API key is required
+        if (!settings.authCode) {
+          // Show a notification that auth code is required
           showAPIKeyNotification();
           // Remove existing translations if any
           document
@@ -101,7 +101,7 @@
       const settings = Translation.getSettings();
 
       if (settings.translationMode !== "off") {
-        if (!settings.apiKey) {
+        if (!settings.authCode) {
           showAPIKeyNotification();
         } else {
           initializeTranslator();

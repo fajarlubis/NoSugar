@@ -59,7 +59,7 @@
             margin-bottom: 10px;
         }
 
-        #apiKey {
+        #authCode {
             width: 100%;
             padding: 8px;
             padding-right: 35px;
@@ -156,10 +156,10 @@
         </div>
 
         <div class="api-key-section">
-            <span class="option-title">Google Cloud Translation API Key:</span>
+            <span class="option-title">Server Authorization Code:</span>
             <div class="api-key-container">
-                <input type="password" id="apiKey" name="apiKey" placeholder="Enter your Google API key">
-                <button type="button" class="toggle-password" title="Show/Hide API Key">
+                <input type="password" id="authCode" name="authCode" placeholder="Enter authorization code">
+                <button type="button" class="toggle-password" title="Show/Hide Code">
                     <svg width="16" height="16" viewBox="0 0 16 16" id="eye-icon">
                         <path
                             d="M8 3C4.5 3 1.5 5.7 0 10c1.5 4.3 4.5 7 8 7s6.5-2.7 8-7c-1.5-4.3-4.5-7-8-7zm0 12c-2.7 0-5.1-2.2-6.4-5.8 1.3-3.6 3.7-5.2 6.4-5.2s5.1 1.6 6.4 5.2c-1.3 3.6-3.7 5.8-6.4 5.8zm0-10a4 4 0 100 8 4 4 0 000-8zm0 6.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
@@ -170,8 +170,15 @@
                     </svg>
                 </button>
             </div>
+            <div style="margin-top:10px;">
+                <label><input type="checkbox" id="useCustomServer"> Use custom server</label>
+                <div id="customServerFields" style="display:none;margin-top:8px;">
+                    <input type="text" id="serverAddress" placeholder="Server address" style="width:100%;margin-bottom:5px;">
+                    <input type="text" id="serverPort" placeholder="Port" style="width:100%;">
+                </div>
+            </div>
             <div style="font-size: 12px; color: #d93025; margin-top: 5px;">
-                * API key is required for the extension to work
+                * Authorization code is required for the extension to work
             </div>
         </div>
 
@@ -183,8 +190,7 @@
     <div class="note">
         <p>Translation is performed in the background as you scroll through messages. No need to click anything if auto
             mode is enabled.</p>
-        <p>You need a Google Cloud API key with Translation API enabled. <a
-                href="https://cloud.google.com/translate/docs/setup" target="_blank">Learn how to get one</a>.</p>
+        <p>The extension uses a dedicated translation server. Provide an authorization code or run your own server.</p>
     </div>
 
     <script src="popup.js"></script>

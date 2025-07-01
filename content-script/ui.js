@@ -407,13 +407,13 @@ var UI = (function () {
           return;
         }
 
-        // Check for API key
+        // Check for authorization code
         const settings = Translation.getSettings();
-        if (!settings.apiKey) {
+        if (!settings.authCode) {
           alert(
-            "Google API key required. Please add your API key in the extension settings."
+            "Authorization code required. Please add it in the extension settings."
           );
-          reject(new Error("API key missing"));
+          reject(new Error("Authorization missing"));
           return;
         }
 
