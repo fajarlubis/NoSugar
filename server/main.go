@@ -2,9 +2,14 @@ package main
 
 import (
 	"bytes"
+	"crypto/sha1"
+	"encoding/base64"
 	"io"
 	"log"
+	"net"
 	"net/http"
+	"strings"
+	"time"
 )
 
 const deeplURL = "https://api-free.deepl.com/v2/translate"
@@ -60,8 +65,72 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(respBody)
 }
 
+func computeAcceptKey(key string) string {
+	const magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
+	h := sha1.New()
+	h.Write([]byte(key + magic))
+	return base64.StdEncoding.EncodeToString(h.Sum(nil))
+}
+
+func wsHandler(w http.ResponseWriter, r *http.Request) {
+	if !strings.EqualFold(r.Header.Get("Upgrade"), "websocket") {
+		http.Error(w, "Upgrade required", http.StatusBadRequest)
+		return
+	}
+
+	key := r.Header.Get("Sec-WebSocket-Key")
+	if key == "" {
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
+	hij, ok := w.(http.Hijacker)
+	if !ok {
+		http.Error(w, "Hijacking not supported", http.StatusInternalServerError)
+		return
+	}
+
+	conn, _, err := hij.Hijack()
+	if err != nil {
+		http.Error(w, "Hijack failed", http.StatusInternalServerError)
+		return
+	}
+
+	accept := computeAcceptKey(key)
+	response := "HTTP/1.1 101 Switching Protocols\r\n" +
+		"Upgrade: websocket\r\n" +
+		"Connection: Upgrade\r\n" +
+		"Sec-WebSocket-Accept: " + accept + "\r\n\r\n"
+	if _, err := conn.Write([]byte(response)); err != nil {
+		conn.Close()
+		return
+	}
+
+	// send a text frame "ok"
+	msg := []byte("ok")
+	frame := []byte{0x81, byte(len(msg))}
+	frame = append(frame, msg...)
+	conn.Write(frame)
+
+	go func(c net.Conn) {
+		defer c.Close()
+		buf := make([]byte, 1024)
+		for {
+			if _, err := c.Read(buf); err != nil {
+				return
+			}
+		}
+	}(conn)
+
+	// keep connection alive
+	for {
+		time.Sleep(time.Minute)
+	}
+}
+
 func main() {
 	http.HandleFunc("/", translateHandler)
+	http.HandleFunc("/ws", wsHandler)
 
 	log.Println("Server started on :8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
