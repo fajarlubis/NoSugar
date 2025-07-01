@@ -26,6 +26,8 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("serverAddress").value = data.customServerAddress || "";
       document.getElementById("customServerFields").style.display = data.useCustomServer ? "block" : "none";
       document.querySelector(`input[name="translationPlacement"][value="${data.translationPlacement || "bottom"}"]`).checked = true;
+
+      connectWebSocket(data);
     }
   );
 
@@ -104,6 +106,15 @@ document.addEventListener("DOMContentLoaded", function () {
             status.textContent = "Settings saved! (Some tabs may need refresh)";
           }
 
+          connectWebSocket({
+            translationMode: translationMode,
+            targetLanguage: targetLanguage,
+            authCode: authCode,
+            useCustomServer: useCustomServer,
+            customServerAddress: serverAddress,
+            translationPlacement: translationPlacement,
+          });
+
           // Clear status message after a delay
           setTimeout(function () {
             status.textContent = "";
@@ -140,4 +151,53 @@ function checkForTranslatableTabs() {
       }
     }
   );
+}
+
+// WebSocket connection for server status
+let ws;
+function connectWebSocket(settings) {
+  const base = (() => {
+    if (settings.useCustomServer && settings.customServerAddress) {
+      return settings.customServerAddress.startsWith("http")
+        ? settings.customServerAddress
+        : `http://${settings.customServerAddress}`;
+    }
+    return "https://nosugar.fajarlubis.me";
+  })();
+
+  let wsUrl = base;
+  if (wsUrl.startsWith("https://")) {
+    wsUrl = wsUrl.replace("https://", "wss://");
+  } else if (wsUrl.startsWith("http://")) {
+    wsUrl = wsUrl.replace("http://", "ws://");
+  } else if (!wsUrl.startsWith("ws")) {
+    wsUrl = `ws://${wsUrl}`;
+  }
+  if (!wsUrl.endsWith("/ws")) {
+    wsUrl += "/ws";
+  }
+
+  try {
+    if (ws) {
+      ws.close();
+    }
+    ws = new WebSocket(wsUrl);
+    const el = document.getElementById("wsStatus");
+    ws.onopen = function () {
+      el.textContent = "Server Connected";
+      el.style.color = "#0f9d58";
+    };
+    ws.onclose = function () {
+      el.textContent = "Server Disconnected";
+      el.style.color = "#d93025";
+    };
+    ws.onerror = function () {
+      el.textContent = "Server Disconnected";
+      el.style.color = "#d93025";
+    };
+  } catch (e) {
+    const el = document.getElementById("wsStatus");
+    el.textContent = "Server Disconnected";
+    el.style.color = "#d93025";
+  }
 }
