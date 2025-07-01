@@ -25,7 +25,6 @@
         "*://*.chat/*"
       ],
       "js": [
-        "content-script/utils.js",
         "content-script/translation.js",
         "content-script/ui.js",
         "content-script/observers.js",
