@@ -33,7 +33,11 @@ var UI = (function () {
     const settings = Translation.getSettings();
 
     // Skip if this message body already has our translation container
-    if (messageBody.querySelector(".translation-container")) return;
+    if (
+      messageBody.nextElementSibling &&
+      messageBody.nextElementSibling.classList.contains("translation-container")
+    )
+      return;
 
     // Get the message text
     const messageText = getMessageText(messageBody);
@@ -56,8 +60,13 @@ var UI = (function () {
     loadingEl.style.fontStyle = "italic";
     translationContainer.appendChild(loadingEl);
 
-    // Append translation container to message body
-    messageBody.appendChild(translationContainer);
+    // Append translation container after the message body so it appears below
+    if (messageBody.parentNode) {
+      messageBody.parentNode.insertBefore(
+        translationContainer,
+        messageBody.nextSibling
+      );
+    }
 
     // Translate based on mode
     if (settings.translationMode === "auto") {
