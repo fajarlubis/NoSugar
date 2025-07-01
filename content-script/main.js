@@ -72,13 +72,14 @@
         if (!settings.authCode) {
           // Show a notification that auth code is required
           showAPIKeyNotification();
-          // Remove existing translations if any
-          document
-            .querySelectorAll(".translation-container")
-            .forEach((el) => el.remove());
-        } else {
-          initializeTranslator();
         }
+
+        // Remove existing translations before re-processing
+        document
+          .querySelectorAll(".translation-container")
+          .forEach((el) => el.remove());
+
+        initializeTranslator();
       } else {
         // If translation is turned off, remove all translations
         document
@@ -103,9 +104,8 @@
       if (settings.translationMode !== "off") {
         if (!settings.authCode) {
           showAPIKeyNotification();
-        } else {
-          initializeTranslator();
         }
+        initializeTranslator();
       }
 
       // Listen for messages from background script

@@ -31,7 +31,8 @@
         "content-script/translation.js",
         "content-script/ui.js",
         "content-script/observers.js",
-        "content-script/main.js"
+        "content-script/main.js",
+        "content.js"
       ],
       "css": [
         "content.css"
