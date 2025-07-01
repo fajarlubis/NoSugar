@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "No Sugar Translator",
-  "version": "1.0",
-  "description": "Automatically translates chat messages between Chinese, English, and Indonesian",
+  "version": "2.0",
+  "description": "Pure Translation. No Sugar Added.",
   "permissions": [
     "activeTab",
     "storage"
