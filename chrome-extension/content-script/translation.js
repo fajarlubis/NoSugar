@@ -120,7 +120,7 @@ var Translation = (function () {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json; charset=utf-8",
-          // Authorization: settings.authCode,
+          Authorization: settings.authCode,
           "X-NoSugar-App": "chrome-extension",
         },
       });
