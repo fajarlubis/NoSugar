@@ -4,18 +4,144 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"encoding/base64"
+	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 	"time"
+
+	"github.com/joho/godotenv"
 )
 
-const deeplURL = "https://api-free.deepl.com/v2/translate"
-const authKey = "DeepL-Auth-Key d8e0fb67-0f3b-430e-85bb-924b8c4d8b8d:fx"
+const (
+	deeplURL  = "https://api-free.deepl.com/v2/translate"
+	googleURL = "https://translation.googleapis.com/language/translate/v2"
+)
+
+type translationRequest struct {
+	Text       []string `json:"text"`
+	TargetLang string   `json:"target_lang"`
+	SourceLang string   `json:"source_lang"`
+}
+
+type translationItem struct {
+	DetectedSourceLanguage string `json:"detected_source_language,omitempty"`
+	Text                   string `json:"text"`
+}
+
+type translationResponse struct {
+	Translations []translationItem `json:"translations"`
+}
+
+func enableCORS(w http.ResponseWriter) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-NoSugar-App")
+	w.Header().Set("Access-Control-Allow-Methods", "POST, OPTIONS")
+}
+
+func callDeepL(body []byte) ([]byte, int, error) {
+	key := os.Getenv("DEEPL_AUTH_KEY")
+	if key == "" {
+		return nil, 0, fmt.Errorf("DEEPL_AUTH_KEY not set")
+	}
+
+	req, err := http.NewRequest(http.MethodPost, deeplURL, bytes.NewBuffer(body))
+	if err != nil {
+		return nil, 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "DeepL-Auth-Key "+key)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, 0, err
+	}
+	return respBody, resp.StatusCode, nil
+}
+
+func callGoogle(reqData *translationRequest) ([]byte, int, error) {
+	key := os.Getenv("GOOGLE_API_KEY")
+	if key == "" {
+		return nil, 0, fmt.Errorf("GOOGLE_API_KEY not set")
+	}
+
+	googleReq := map[string]interface{}{
+		"q":      reqData.Text,
+		"target": strings.ToLower(reqData.TargetLang),
+		"format": "text",
+	}
+	if reqData.SourceLang != "" {
+		googleReq["source"] = strings.ToLower(reqData.SourceLang)
+	}
+
+	gBody, err := json.Marshal(googleReq)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	u := googleURL + "?key=" + url.QueryEscape(key)
+	req, err := http.NewRequest(http.MethodPost, u, bytes.NewBuffer(gBody))
+	if err != nil {
+		return nil, 0, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, 0, err
+	}
+	defer resp.Body.Close()
+
+	respBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	var googleResp struct {
+		Data struct {
+			Translations []struct {
+				TranslatedText         string `json:"translatedText"`
+				DetectedSourceLanguage string `json:"detectedSourceLanguage,omitempty"`
+			} `json:"translations"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(respBody, &googleResp); err != nil {
+		return nil, 0, err
+	}
+
+	out := translationResponse{}
+	for _, t := range googleResp.Data.Translations {
+		out.Translations = append(out.Translations, translationItem{
+			DetectedSourceLanguage: t.DetectedSourceLanguage,
+			Text:                   t.TranslatedText,
+		})
+	}
+
+	outBytes, err := json.Marshal(out)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return outBytes, resp.StatusCode, nil
+}
 
 func translateHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Only POST method is allowed", http.StatusMethodNotAllowed)
 		return
@@ -28,40 +154,36 @@ func translateHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	log.Println("Client Request Headers:")
-	for name, values := range r.Header {
-		for _, value := range values {
-			log.Printf("  %s: %s\n", name, value)
-		}
-	}
-
 	log.Println("Client Request Body:")
 	log.Println(string(body))
 
-	req, err := http.NewRequest(http.MethodPost, deeplURL, bytes.NewBuffer(body))
-	if err != nil {
-		http.Error(w, "Failed to create request to DeepL", http.StatusInternalServerError)
-		return
+	engine := strings.ToLower(os.Getenv("TRANSLATION_ENGINE"))
+	if engine == "" {
+		engine = "deepl"
 	}
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", authKey)
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		http.Error(w, "Failed to contact DeepL API", http.StatusBadGateway)
-		return
+	var respBody []byte
+	var status int
+
+	switch engine {
+	case "google":
+		var reqData translationRequest
+		if err := json.Unmarshal(body, &reqData); err != nil {
+			http.Error(w, "Invalid request", http.StatusBadRequest)
+			return
+		}
+		respBody, status, err = callGoogle(&reqData)
+	default:
+		respBody, status, err = callDeepL(body)
 	}
-	defer resp.Body.Close()
 
-	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
-		http.Error(w, "Failed to read response from DeepL", http.StatusInternalServerError)
+		http.Error(w, err.Error(), http.StatusBadGateway)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(resp.StatusCode)
+	w.WriteHeader(status)
 	w.Write(respBody)
 }
 
@@ -73,6 +195,11 @@ func computeAcceptKey(key string) string {
 }
 
 func wsHandler(w http.ResponseWriter, r *http.Request) {
+	enableCORS(w)
+	if r.Method == http.MethodOptions {
+		return
+	}
+
 	if !strings.EqualFold(r.Header.Get("Upgrade"), "websocket") {
 		http.Error(w, "Upgrade required", http.StatusBadRequest)
 		return
@@ -129,6 +256,10 @@ func wsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
 	http.HandleFunc("/", translateHandler)
 	http.HandleFunc("/ws", wsHandler)
 

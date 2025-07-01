@@ -54,6 +54,16 @@ Expected response:
 }
 ```
 
+### Server Environment Variables
+
+When running your own translation server, configure it using the following environment variables:
+
+- `TRANSLATION_ENGINE` – provider to use (`deepl` or `google`, default `deepl`).
+- `DEEPL_AUTH_KEY` – API key for DeepL translations.
+- `GOOGLE_API_KEY` – API key for Google Cloud Translation.
+
+You can place these in a `.env` file (see `server/.env.example`) and the server will load them automatically at startup.
+
 
 ## 🐛 Known Issues
 - Occasional delays for lengthy messages.
