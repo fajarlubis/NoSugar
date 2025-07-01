@@ -12,6 +12,31 @@ var Translation = (function () {
 
   // Translation cache
   const translationCache = {};
+  const CACHE_LIFETIME = 28 * 24 * 60 * 60 * 1000; // 4 weeks
+
+  // Load persistent cache from chrome.storage.local
+  async function loadPersistentCache() {
+    return new Promise((resolve) => {
+      chrome.storage.local.get({ translationCache: {} }, (result) => {
+        const now = Date.now();
+        Object.entries(result.translationCache).forEach(([key, entry]) => {
+          if (entry.timestamp && now - entry.timestamp < CACHE_LIFETIME) {
+            translationCache[key] = entry;
+          }
+        });
+        resolve();
+      });
+    });
+  }
+
+  // Save a single entry to chrome.storage.local
+  function saveEntryToPersistentCache(key, entry) {
+    chrome.storage.local.get({ translationCache: {} }, (result) => {
+      const cache = result.translationCache;
+      cache[key] = entry;
+      chrome.storage.local.set({ translationCache: cache });
+    });
+  }
 
   // Settings
   let settings = {
@@ -35,8 +60,9 @@ var Translation = (function () {
           customServerAddress: "",
           translationPlacement: "bottom",
         },
-        (data) => {
+        async (data) => {
           settings = data;
+          await loadPersistentCache();
           resolve(settings);
         }
       );
@@ -167,6 +193,26 @@ var Translation = (function () {
       if (translationCache[cacheKey]) {
         updateTranslationUI(containerElement, translationCache[cacheKey]);
         return;
+      } else {
+        const storedEntry = await new Promise((resolve) => {
+          chrome.storage.local.get({ translationCache: {} }, (result) => {
+            const entry = result.translationCache[cacheKey];
+            if (
+              entry &&
+              entry.timestamp &&
+              Date.now() - entry.timestamp < CACHE_LIFETIME
+            ) {
+              translationCache[cacheKey] = entry;
+              resolve(entry);
+            } else {
+              resolve(null);
+            }
+          });
+        });
+        if (storedEntry) {
+          updateTranslationUI(containerElement, storedEntry);
+          return;
+        }
       }
 
       // Update UI to show loading state
@@ -199,7 +245,9 @@ var Translation = (function () {
           translated: translationResult,
           from: detectedLanguage,
           to: settings.targetLanguage,
+          timestamp: Date.now(),
         };
+        saveEntryToPersistentCache(cacheKey, translationCache[cacheKey]);
 
         // Update UI with translation
         updateTranslationUI(containerElement, translationCache[cacheKey]);
@@ -245,10 +293,11 @@ var Translation = (function () {
   }
 
   // Clear the translation cache
-  function clearCache() {
+  async function clearCache() {
     Object.keys(translationCache).forEach((key) => {
       delete translationCache[key];
     });
+    await loadPersistentCache();
   }
 
   // Expose public methods and properties
