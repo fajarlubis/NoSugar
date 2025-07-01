@@ -25,11 +25,11 @@
 - **Preferred Language:** Choose your target language for translation.
 - **Auto-Translate:** Enable or disable automatic message translation.
 - **Highlight Translations:** Toggle highlighted translations for better visibility.
-- **Server Configuration:** Use the default translation server or specify your own address and port. An authorization code is required for all requests.
+- **Server Configuration:** Use the default translation server or specify your own address. Include the port in the URL if needed. An authorization code is required for all requests.
 - **Translation Placement:** Display translations below each message or to the right of the original bubble.
 
 ### 🌐 Server API
-By default the extension sends translation requests to `https://nosugar.fajarlubis.me` using a POST request. You can run your own server and provide its address and port in the settings. Every request includes an `Authorization` header along with an `X-NoSugar-App` header so the server can identify the client.
+By default the extension sends translation requests to `https://nosugar.fajarlubis.me` using a POST request. You can run your own server and provide its address in the settings (add the port in the URL if required). Every request includes an `Authorization` header along with an `X-NoSugar-App` header so the server can identify the client.
 
 Example request body:
 
