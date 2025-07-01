@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>No Sugar Translator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        width: 320px;
+        padding: 15px;
+        margin: 0;
+        background: #f6f7f8;
+        color: #303030;
+      }
+
+      header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-direction: column;
+      }
+
+      header img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        margin-bottom: 5px;
+      }
+
+      h2 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .option-group {
+        margin-bottom: 15px;
+      }
+
+      .option-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+      }
+
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-left: 5px;
+      }
+
+      .radio-option {
+        display: flex;
+        align-items: center;
+      }
+
+      .radio-option input {
+        margin-right: 8px;
+      }
+
+      label {
+        user-select: none;
+      }
+
+      .api-key-section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+      }
+
+      .api-key-container {
+        position: relative;
+        margin-bottom: 10px;
+      }
+
+      #authCode {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      #serverAddress {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      #saveButton {
+        background-color: #00b0ff;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+      }
+
+      #saveButton:hover {
+        background-color: #0092d4;
+      }
+
+      #status {
+        margin-top: 10px;
+        text-align: center;
+        min-height: 20px;
+        color: #4caf50;
+        font-weight: bold;
+      }
+
+      #wsStatus {
+        margin-top: 5px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .note {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #666;
+        background: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #666;
+        background: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <header>
+      <img src="icons/32x32.png" alt="Wire Icon" />
+      <h2>No Sugar Translator</h2>
+      <span>Pure Translation. No Sugar Added.</span>
+    </header>
+
+    <form id="settingsForm">
+      <div class="option-group">
+        <span class="option-title">Translation Mode:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="auto"
+              name="translationMode"
+              value="auto"
+              checked
+            />
+            <label for="auto"
+              >Auto-detect and translate to selected language</label
+            >
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="manual"
+              name="translationMode"
+              value="manual"
+            />
+            <label for="manual"
+              >Manually translate when clicking messages</label
+            >
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="off" name="translationMode" value="off" />
+            <label for="off">Turn off translation</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <span class="option-title">Target Language:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="english"
+              name="targetLanguage"
+              value="en"
+              checked
+            />
+            <label for="english">English</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="chinese" name="targetLanguage" value="zh" />
+            <label for="chinese">Chinese</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="indonesian"
+              name="targetLanguage"
+              value="id"
+            />
+            <label for="indonesian">Indonesian</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="option-group">
+        <span class="option-title">Translation Placement:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="place-bottom"
+              name="translationPlacement"
+              value="bottom"
+              checked
+            />
+            <label for="place-bottom">Below message</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="place-right"
+              name="translationPlacement"
+              value="right"
+            />
+            <label for="place-right">Right of message</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="api-key-section">
+        <span class="option-title">Server Authorization Code:</span>
+        <div class="api-key-container">
+          <input
+            type="text"
+            id="authCode"
+            name="authCode"
+            placeholder="Enter authorization code"
+          />
+          <div style="font-size: 12px; color: #d93025; margin-top: 5px">
+            * Authorization code is required for the extension to work
+          </div>
+        </div>
+        <div style="margin-top: 10px; margin-bottom: 10px">
+          <input
+            type="checkbox"
+            id="useCustomServer"
+            name="useCustomServer"
+            style="vertical-align: middle"
+          />
+          <label for="useCustomServer"> Use custom server</label>
+          <div id="customServerFields" style="display: none; margin-top: 8px">
+            <input
+              type="text"
+              id="serverAddress"
+              placeholder="Server address"
+              style="width: 100%; margin-bottom: 5px"
+            />
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" id="saveButton">Save Settings</button>
+    </form>
+
+    <div id="status" class="mt-2 text-center min-h-[20px] text-green-600 font-bold"></div>
+
+    <div class="note">
+      <p>
+        Translation is performed in the background as you scroll through
+        messages. No need to click anything if auto mode is enabled.
+      </p>
+      <p>
+        The extension uses a dedicated translation server. Provide an
+        authorization code or run your own server.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Version 2.0.0</p>
+    </div>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
