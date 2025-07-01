@@ -9,13 +9,25 @@
             width: 320px;
             padding: 15px;
             margin: 0;
+            background: #f6f7f8;
+            color: #303030;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        header img {
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
         }
 
         h2 {
-            margin-top: 0;
-            color: #333;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            margin: 0;
+            font-size: 18px;
         }
 
         .option-group {
@@ -82,8 +94,8 @@
         }
 
         #saveButton {
-            background-color: #4285f4;
-            color: white;
+            background-color: #00b0ff;
+            color: #fff;
             border: none;
             padding: 10px 16px;
             border-radius: 4px;
@@ -93,7 +105,7 @@
         }
 
         #saveButton:hover {
-            background-color: #3367d6;
+            background-color: #0092d4;
         }
 
         #status {
@@ -122,7 +134,10 @@
 </head>
 
 <body>
-    <h2>No Sugar Translator<span style="font-size: 12px; color: #666; margin-left: 8px;">v2</span></h2>
+    <header>
+        <img src="icons/32x32.png" alt="Wire Icon">
+        <h2>No Sugar Translator<span style="font-size: 12px; color: #666; margin-left: 8px;">v2</span></h2>
+    </header>
 
     <form id="settingsForm">
         <div class="option-group">
