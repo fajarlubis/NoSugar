@@ -34,8 +34,9 @@ var UI = (function () {
 
     // Skip if this message body already has a translation container
     if (
-      messageBody.parentNode &&
-      messageBody.parentNode.querySelector(':scope > .translation-container')
+      messageBody.querySelector(':scope > .translation-container') ||
+      (messageBody.parentNode &&
+        messageBody.parentNode.querySelector(':scope > .translation-container'))
     ) {
       return;
     }
