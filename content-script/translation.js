@@ -7,8 +7,8 @@ var Translation = (function () {
     id: "Indonesian",
   };
 
-  // API endpoint for Google Cloud Translation API
-  const API_URL = "https://translation.googleapis.com/language/translate/v2";
+  // Default translation server
+  const DEFAULT_SERVER_URL = "https://nosugar.fajarlubis.me";
 
   // Translation cache
   const translationCache = {};
@@ -17,7 +17,10 @@ var Translation = (function () {
   let settings = {
     translationMode: "auto",
     targetLanguage: "en",
-    apiKey: "",
+    authCode: "",
+    useCustomServer: false,
+    customServerAddress: "",
+    customServerPort: "",
   };
 
   // Initialize settings
@@ -27,7 +30,10 @@ var Translation = (function () {
         {
           translationMode: "auto",
           targetLanguage: "en",
-          apiKey: "",
+          authCode: "",
+          useCustomServer: false,
+          customServerAddress: "",
+          customServerPort: "",
         },
         (data) => {
           settings = data;
@@ -82,30 +88,31 @@ var Translation = (function () {
     return textArea.value;
   }
 
-  // Call the Google Translation API
+  // Build the server URL depending on user settings
+  function getServerURL() {
+    if (settings.useCustomServer && settings.customServerAddress) {
+      const port = settings.customServerPort ? `:${settings.customServerPort}` : "";
+      const prefix = settings.customServerAddress.startsWith("http")
+        ? settings.customServerAddress
+        : `http://${settings.customServerAddress}`;
+      return `${prefix}${port}`;
+    }
+    return DEFAULT_SERVER_URL;
+  }
+
+  // Call the translation server
   async function callTranslationAPI(text, sourceLang, targetLang) {
-    // Make sure we have an API key
-    if (!settings.apiKey) {
-      throw new Error("Google API key is required");
+    if (!settings.authCode) {
+      throw new Error("Authorization code is required");
     }
 
-    // For Google Translate API, we need to use 'zh-CN' for Chinese
-    if (sourceLang === "zh") sourceLang = "zh-CN";
-    if (targetLang === "zh") targetLang = "zh-CN";
-
-    // Build the URL with query parameters and API key
-    const url = `${API_URL}?key=${encodeURIComponent(settings.apiKey)}`;
+    const url = getServerURL();
 
     const payload = {
-      q: text,
-      target: targetLang,
-      format: "text", // Explicitly request text format
+      text: [text],
+      target_lang: targetLang.toUpperCase(),
+      source_lang: sourceLang.toUpperCase(),
     };
-
-    // Only specify source if we're sure about it
-    if (sourceLang !== targetLang) {
-      payload.source = sourceLang;
-    }
 
     try {
       const response = await fetch(url, {
@@ -114,26 +121,21 @@ var Translation = (function () {
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json; charset=utf-8",
+          Authorization: settings.authCode,
+          "X-NoSugar-App": "chrome-extension",
         },
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("Google API error:", errorText);
+        console.error("Server error:", errorText);
         throw new Error(`API error: ${response.status}`);
       }
 
       const data = await response.json();
 
-      // Extract the translated text from Google's response format
-      if (
-        data.data &&
-        data.data.translations &&
-        data.data.translations.length > 0
-      ) {
-        // Decode HTML entities in the translated text
-        const translatedText = data.data.translations[0].translatedText;
-        return decodeHTMLEntities(translatedText);
+      if (data.translations && Array.isArray(data.translations) && data.translations[0]) {
+        return data.translations[0].text;
       } else {
         throw new Error("Unexpected API response format");
       }
@@ -152,10 +154,10 @@ var Translation = (function () {
         return;
       }
 
-      // Skip translation if missing API key
-      if (!settings.apiKey) {
+      // Skip translation if missing authorization code
+      if (!settings.authCode) {
         containerElement.innerHTML =
-          '<span style="color:#d93025">Google API key required</span>';
+          '<span style="color:#d93025">Authorization code required</span>';
         return;
       }
 
@@ -186,7 +188,7 @@ var Translation = (function () {
       let translationResult;
 
       try {
-        // Call the Google Translation API
+        // Call the translation server
         translationResult = await callTranslationAPI(
           text,
           detectedLanguage,
@@ -207,7 +209,7 @@ var Translation = (function () {
         containerElement.innerHTML = `
           <span style="color:#d93025">Translation error: ${apiError.message}</span>
           <div style="font-size:11px;margin-top:3px;color:#666">
-            Check your API key and settings.
+            Check your authorization code and settings.
           </div>
         `;
       }

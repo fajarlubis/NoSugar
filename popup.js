@@ -8,7 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
     {
       translationMode: "auto",
       targetLanguage: "en",
-      apiKey: "",
+      authCode: "",
+      useCustomServer: false,
+      customServerAddress: "",
+      customServerPort: "",
     },
     function (data) {
       // Set form values to saved values
@@ -18,27 +21,38 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector(
         `input[name="targetLanguage"][value="${data.targetLanguage}"]`
       ).checked = true;
-      document.getElementById("apiKey").value = data.apiKey;
+      document.getElementById("authCode").value = data.authCode;
+      document.getElementById("useCustomServer").checked = data.useCustomServer;
+      document.getElementById("serverAddress").value = data.customServerAddress || "";
+      document.getElementById("serverPort").value = data.customServerPort || "";
+      document.getElementById("customServerFields").style.display = data.useCustomServer ? "block" : "none";
     }
   );
 
   // Toggle password visibility
   const toggleButton = document.querySelector(".toggle-password");
-  const apiKeyInput = document.getElementById("apiKey");
+  const authCodeInput = document.getElementById("authCode");
   const eyeIcon = document.getElementById("eye-icon");
   const eyeSlashIcon = document.getElementById("eye-slash-icon");
+
+  const customCheckbox = document.getElementById("useCustomServer");
+  const customFields = document.getElementById("customServerFields");
+
+  customCheckbox.addEventListener("change", function () {
+    customFields.style.display = this.checked ? "block" : "none";
+  });
 
   toggleButton.addEventListener("click", function (e) {
     // Prevent any potential form submission
     e.preventDefault();
 
     // Toggle input type between "password" and "text"
-    if (apiKeyInput.type === "password") {
-      apiKeyInput.type = "text";
+    if (authCodeInput.type === "password") {
+      authCodeInput.type = "text";
       eyeIcon.style.display = "none";
       eyeSlashIcon.style.display = "block";
     } else {
-      apiKeyInput.type = "password";
+      authCodeInput.type = "password";
       eyeIcon.style.display = "block";
       eyeSlashIcon.style.display = "none";
     }
@@ -58,7 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
       const targetLanguage = document.querySelector(
         'input[name="targetLanguage"]:checked'
       ).value;
-      const apiKey = document.getElementById("apiKey").value;
+      const authCode = document.getElementById("authCode").value;
+      const useCustomServer = document.getElementById("useCustomServer").checked;
+      const serverAddress = document.getElementById("serverAddress").value;
+      const serverPort = document.getElementById("serverPort").value;
 
       // Show saving status
       const status = document.getElementById("status");
@@ -71,7 +88,10 @@ document.addEventListener("DOMContentLoaded", function () {
           settings: {
             translationMode: translationMode,
             targetLanguage: targetLanguage,
-            apiKey: apiKey,
+            authCode: authCode,
+            useCustomServer: useCustomServer,
+            customServerAddress: serverAddress,
+            customServerPort: serverPort,
           },
         },
         function (response) {
@@ -107,13 +127,13 @@ function checkForTranslatableTabs() {
         <p>Translation is active on ${response.count} tab${
           response.count === 1 ? "" : "s"
         }.</p>
-        <p>You need a Google Cloud API key with Translation API enabled. <a href="https://cloud.google.com/translate/docs/setup" target="_blank">Learn how to get one</a>.</p>
+        <p>Provide an authorization code for the default server or configure your own.</p>
       `;
       } else {
         // No translatable tabs open
         note.innerHTML = `
         <p><strong>No chat tabs detected.</strong> Please open a chat tab for translation to work.</p>
-        <p>You need a Google Cloud API key with Translation API enabled. <a href="https://cloud.google.com/translate/docs/setup" target="_blank">Learn how to get one</a>.</p>
+        <p>Provide an authorization code for the default server or configure your own.</p>
       `;
       }
     }

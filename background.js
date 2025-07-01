@@ -60,7 +60,10 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
       {
         translationMode: "auto",
         targetLanguage: "en",
-        apiKey: "",
+        authCode: "",
+        useCustomServer: false,
+        customServerAddress: "",
+        customServerPort: "",
       },
       (settings) => {
         // Send the current settings to the newly loaded tab

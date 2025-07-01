@@ -24,6 +24,7 @@
 - **Preferred Language:** Choose your target language for translation.
 - **Auto-Translate:** Enable or disable automatic message translation.
 - **Highlight Translations:** Toggle highlighted translations for better visibility.
+- **Server Configuration:** Use the default translation server or specify your own address and port. An authorization code is required for all requests.
 
 ## 🐛 Known Issues
 - Occasional delays for lengthy messages.
