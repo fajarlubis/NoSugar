@@ -77,14 +77,36 @@
         // Remove existing translations before re-processing
         document
           .querySelectorAll(".translation-container")
-          .forEach((el) => el.remove());
+          .forEach((el) => {
+            const wrapper = el.parentElement;
+            el.remove();
+            if (
+              wrapper &&
+              wrapper.classList.contains("translation-wrapper")
+            ) {
+              const msg = wrapper.querySelector(".message-body");
+              if (msg) wrapper.parentNode.insertBefore(msg, wrapper);
+              wrapper.remove();
+            }
+          });
 
         initializeTranslator();
       } else {
         // If translation is turned off, remove all translations
         document
           .querySelectorAll(".translation-container")
-          .forEach((el) => el.remove());
+          .forEach((el) => {
+            const wrapper = el.parentElement;
+            el.remove();
+            if (
+              wrapper &&
+              wrapper.classList.contains("translation-wrapper")
+            ) {
+              const msg = wrapper.querySelector(".message-body");
+              if (msg) wrapper.parentNode.insertBefore(msg, wrapper);
+              wrapper.remove();
+            }
+          });
       }
 
       sendResponse({ success: true });

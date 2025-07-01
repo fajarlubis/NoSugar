@@ -64,6 +64,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         useCustomServer: false,
         customServerAddress: "",
         customServerPort: "",
+        translationPlacement: "bottom",
       },
       (settings) => {
         // Send the current settings to the newly loaded tab

@@ -21,6 +21,7 @@ var Translation = (function () {
     useCustomServer: false,
     customServerAddress: "",
     customServerPort: "",
+    translationPlacement: "bottom",
   };
 
   // Initialize settings
@@ -34,6 +35,7 @@ var Translation = (function () {
           useCustomServer: false,
           customServerAddress: "",
           customServerPort: "",
+          translationPlacement: "bottom",
         },
         (data) => {
           settings = data;
