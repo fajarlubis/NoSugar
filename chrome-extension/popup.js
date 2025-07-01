@@ -31,33 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   );
 
-  // Toggle password visibility
-  const toggleButton = document.querySelector(".toggle-password");
-  const authCodeInput = document.getElementById("authCode");
-  const eyeIcon = document.getElementById("eye-icon");
-  const eyeSlashIcon = document.getElementById("eye-slash-icon");
-
   const customCheckbox = document.getElementById("useCustomServer");
   const customFields = document.getElementById("customServerFields");
 
   customCheckbox.addEventListener("change", function () {
     customFields.style.display = this.checked ? "block" : "none";
-  });
-
-  toggleButton.addEventListener("click", function (e) {
-    // Prevent any potential form submission
-    e.preventDefault();
-
-    // Toggle input type between "password" and "text"
-    if (authCodeInput.type === "password") {
-      authCodeInput.type = "text";
-      eyeIcon.style.display = "none";
-      eyeSlashIcon.style.display = "block";
-    } else {
-      authCodeInput.type = "password";
-      eyeIcon.style.display = "block";
-      eyeSlashIcon.style.display = "none";
-    }
   });
 
   // Form submission handler

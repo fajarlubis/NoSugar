@@ -1,234 +1,291 @@
 <!DOCTYPE html>
 <html>
-
-<head>
+  <head>
     <title>No Sugar Translator</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            width: 320px;
-            padding: 15px;
-            margin: 0;
-            background: #f6f7f8;
-            color: #303030;
-        }
+      body {
+        font-family: Arial, sans-serif;
+        width: 320px;
+        padding: 15px;
+        margin: 0;
+        background: #f6f7f8;
+        color: #303030;
+      }
 
-        header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
+      header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-direction: column;
+      }
 
-        header img {
-            width: 20px;
-            height: 20px;
-            margin-right: 8px;
-        }
+      header img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        margin-bottom: 5px;
+      }
 
-        h2 {
-            margin: 0;
-            font-size: 18px;
-        }
+      h2 {
+        margin: 0;
+        font-size: 18px;
+      }
 
-        .option-group {
-            margin-bottom: 15px;
-        }
+      .option-group {
+        margin-bottom: 15px;
+      }
 
-        .option-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-        }
+      .option-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+      }
 
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-left: 5px;
-        }
+      .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin-left: 5px;
+      }
 
-        .radio-option {
-            display: flex;
-            align-items: center;
-        }
+      .radio-option {
+        display: flex;
+        align-items: center;
+      }
 
-        .radio-option input {
-            margin-right: 8px;
-        }
+      .radio-option input {
+        margin-right: 8px;
+      }
 
-        label {
-            user-select: none;
-        }
+      label {
+        user-select: none;
+      }
 
-        .api-key-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #eee;
-        }
+      .api-key-section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+      }
 
-        .api-key-container {
-            position: relative;
-            margin-bottom: 10px;
-        }
+      .api-key-container {
+        position: relative;
+        margin-bottom: 10px;
+      }
 
-        #authCode {
-            width: 100%;
-            padding: 8px;
-            padding-right: 35px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+      #authCode {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-        .toggle-password {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            font-size: 16px;
-            color: #555;
-        }
+      #serverAddress {
+        width: 100%;
+        padding: 8px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
 
-        #saveButton {
-            background-color: #00b0ff;
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            width: 100%;
-        }
+      #saveButton {
+        background-color: #00b0ff;
+        color: #fff;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: bold;
+        width: 100%;
+      }
 
-        #saveButton:hover {
-            background-color: #0092d4;
-        }
+      #saveButton:hover {
+        background-color: #0092d4;
+      }
 
-        #status {
-            margin-top: 10px;
-            text-align: center;
-            min-height: 20px;
-            color: #4CAF50;
-            font-weight: bold;
-        }
+      #status {
+        margin-top: 10px;
+        text-align: center;
+        min-height: 20px;
+        color: #4caf50;
+        font-weight: bold;
+      }
 
-        #wsStatus {
-            margin-top: 5px;
-            text-align: center;
-            font-weight: bold;
-        }
+      #wsStatus {
+        margin-top: 5px;
+        text-align: center;
+        font-weight: bold;
+      }
 
-        .note {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #666;
-            background: #f5f5f5;
-            padding: 8px;
-            border-radius: 4px;
-        }
+      .note {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #666;
+        background: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+      }
+
+      .footer {
+        margin-top: 15px;
+        font-size: 12px;
+        color: #666;
+        background: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
     </style>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <img src="icons/32x32.png" alt="Wire Icon">
-        <h2>No Sugar Translator<span style="font-size: 12px; color: #666; margin-left: 8px;">v2</span></h2>
+      <img src="icons/32x32.png" alt="Wire Icon" />
+      <h2>No Sugar Translator</h2>
+      <span>Pure Translation. No Sugar Added.</span>
     </header>
 
     <form id="settingsForm">
-        <div class="option-group">
-            <span class="option-title">Translation Mode:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="auto" name="translationMode" value="auto" checked>
-                    <label for="auto">Auto-detect and translate to selected language</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="manual" name="translationMode" value="manual">
-                    <label for="manual">Manually translate when clicking messages</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="off" name="translationMode" value="off">
-                    <label for="off">Turn off translation</label>
-                </div>
-            </div>
+      <div class="option-group">
+        <span class="option-title">Translation Mode:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="auto"
+              name="translationMode"
+              value="auto"
+              checked
+            />
+            <label for="auto"
+              >Auto-detect and translate to selected language</label
+            >
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="manual"
+              name="translationMode"
+              value="manual"
+            />
+            <label for="manual"
+              >Manually translate when clicking messages</label
+            >
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="off" name="translationMode" value="off" />
+            <label for="off">Turn off translation</label>
+          </div>
         </div>
+      </div>
 
-        <div class="option-group">
-            <span class="option-title">Target Language:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="english" name="targetLanguage" value="en" checked>
-                    <label for="english">English</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="chinese" name="targetLanguage" value="zh">
-                    <label for="chinese">Chinese</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="indonesian" name="targetLanguage" value="id">
-                    <label for="indonesian">Indonesian</label>
-                </div>
-            </div>
+      <div class="option-group">
+        <span class="option-title">Target Language:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="english"
+              name="targetLanguage"
+              value="en"
+              checked
+            />
+            <label for="english">English</label>
+          </div>
+          <div class="radio-option">
+            <input type="radio" id="chinese" name="targetLanguage" value="zh" />
+            <label for="chinese">Chinese</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="indonesian"
+              name="targetLanguage"
+              value="id"
+            />
+            <label for="indonesian">Indonesian</label>
+          </div>
         </div>
+      </div>
 
-        <div class="option-group">
-            <span class="option-title">Translation Placement:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="place-bottom" name="translationPlacement" value="bottom" checked>
-                    <label for="place-bottom">Below message</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="place-right" name="translationPlacement" value="right">
-                    <label for="place-right">Right of message</label>
-                </div>
-            </div>
+      <div class="option-group">
+        <span class="option-title">Translation Placement:</span>
+        <div class="radio-group">
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="place-bottom"
+              name="translationPlacement"
+              value="bottom"
+              checked
+            />
+            <label for="place-bottom">Below message</label>
+          </div>
+          <div class="radio-option">
+            <input
+              type="radio"
+              id="place-right"
+              name="translationPlacement"
+              value="right"
+            />
+            <label for="place-right">Right of message</label>
+          </div>
         </div>
+      </div>
 
-        <div class="api-key-section">
-            <span class="option-title">Server Authorization Code:</span>
-            <div class="api-key-container">
-                <input type="password" id="authCode" name="authCode" placeholder="Enter authorization code">
-                <button type="button" class="toggle-password" title="Show/Hide Code">
-                    <svg width="16" height="16" viewBox="0 0 16 16" id="eye-icon">
-                        <path
-                            d="M8 3C4.5 3 1.5 5.7 0 10c1.5 4.3 4.5 7 8 7s6.5-2.7 8-7c-1.5-4.3-4.5-7-8-7zm0 12c-2.7 0-5.1-2.2-6.4-5.8 1.3-3.6 3.7-5.2 6.4-5.2s5.1 1.6 6.4 5.2c-1.3 3.6-3.7 5.8-6.4 5.8zm0-10a4 4 0 100 8 4 4 0 000-8zm0 6.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
-                    </svg>
-                    <svg width="16" height="16" viewBox="0 0 16 16" id="eye-slash-icon" style="display: none;">
-                        <path
-                            d="M14.53 1.47a.75.75 0 00-1.06 0L11.8 3.14C10.69 2.4 9.38 2 8 2 4.5 2 1.5 4.7 0 9c.73 2.1 1.83 3.76 3.18 4.96l-1.71 1.71a.75.75 0 101.06 1.06l12-12a.75.75 0 000-1.06zM8 14c-2.7 0-5.1-2.2-6.4-5.8.54-1.49 1.31-2.68 2.25-3.5L5.17 6C4.44 6.55 4 7.5 4 8.5c0 2.21 1.79 4 4 4 1 0 1.95-.44 2.5-1.17l1.3 1.32c-.82.94-2.01 1.7-3.8 2.35zM4.85 3.44C5.77 2.9 6.83 2.5 8 2.5c2.7 0 5.1 1.6 6.4 5.2-.54 1.49-1.31 2.68-2.25 3.5L4.85 3.44zM11.83 10c.73-.45 1.17-1.4 1.17-2.4 0-2.21-1.79-4-4-4-1 0-1.95.44-2.5 1.17L11.83 10z" />
-                    </svg>
-                </button>
-            </div>
-            <div style="margin-top:10px;">
-                <label><input type="checkbox" id="useCustomServer"> Use custom server</label>
-                <div id="customServerFields" style="display:none;margin-top:8px;">
-                    <input type="text" id="serverAddress" placeholder="Server address" style="width:100%;margin-bottom:5px;">
-                </div>
-            </div>
-            <div style="font-size: 12px; color: #d93025; margin-top: 5px;">
-                * Authorization code is required for the extension to work
-            </div>
+      <div class="api-key-section">
+        <span class="option-title">Server Authorization Code:</span>
+        <div class="api-key-container">
+          <input
+            type="text"
+            id="authCode"
+            name="authCode"
+            placeholder="Enter authorization code"
+          />
+          <div style="font-size: 12px; color: #d93025; margin-top: 5px">
+            * Authorization code is required for the extension to work
+          </div>
         </div>
+        <div style="margin-top: 10px; margin-bottom: 10px">
+          <input
+            type="checkbox"
+            id="useCustomServer"
+            name="useCustomServer"
+            style="vertical-align: middle"
+          />
+          <label for="useCustomServer"> Use custom server</label>
+          <div id="customServerFields" style="display: none; margin-top: 8px">
+            <input
+              type="text"
+              id="serverAddress"
+              placeholder="Server address"
+              style="width: 100%; margin-bottom: 5px"
+            />
+          </div>
+        </div>
+      </div>
 
-        <button type="submit" id="saveButton">Save Settings</button>
+      <button type="submit" id="saveButton">Save Settings</button>
     </form>
 
     <div id="status"></div>
     <div id="wsStatus"></div>
 
     <div class="note">
-        <p>Translation is performed in the background as you scroll through messages. No need to click anything if auto
-            mode is enabled.</p>
-        <p>The extension uses a dedicated translation server. Provide an authorization code or run your own server.</p>
+      <p>
+        Translation is performed in the background as you scroll through
+        messages. No need to click anything if auto mode is enabled.
+      </p>
+      <p>
+        The extension uses a dedicated translation server. Provide an
+        authorization code or run your own server.
+      </p>
+    </div>
+
+    <div class="footer">
+      <p>Version 2.0.0</p>
     </div>
 
     <script src="popup.js"></script>
-</body>
-
+  </body>
 </html>
