@@ -32,12 +32,13 @@ var UI = (function () {
   function processMessageBody(messageBody) {
     const settings = Translation.getSettings();
 
-    // Skip if this message body already has our translation container
+    // Skip if this message body already has a translation container
     if (
-      messageBody.nextElementSibling &&
-      messageBody.nextElementSibling.classList.contains("translation-container")
-    )
+      messageBody.parentNode &&
+      messageBody.parentNode.querySelector(':scope > .translation-container')
+    ) {
       return;
+    }
 
     // Get the message text
     const messageText = getMessageText(messageBody);
@@ -46,7 +47,10 @@ var UI = (function () {
     // Create translation container
     const translationContainer = document.createElement("div");
     translationContainer.className = "translation-container";
-    translationContainer.style.marginTop = "8px";
+    translationContainer.style.marginTop = settings.translationPlacement ===
+      "bottom"
+        ? "8px"
+        : "0";
     translationContainer.style.padding = "6px 8px";
     translationContainer.style.fontSize = "13px";
 
@@ -65,12 +69,32 @@ var UI = (function () {
     loadingEl.style.fontStyle = "italic";
     translationContainer.appendChild(loadingEl);
 
-    // Append translation container after the message body so it appears below
-    if (messageBody.parentNode) {
-      messageBody.parentNode.insertBefore(
-        translationContainer,
-        messageBody.nextSibling
-      );
+    // Position translation container based on user setting
+    if (settings.translationPlacement === "right") {
+      let wrapper;
+      if (messageBody.parentNode &&
+          messageBody.parentNode.classList.contains("translation-wrapper")) {
+        wrapper = messageBody.parentNode;
+      } else {
+        wrapper = document.createElement("div");
+        wrapper.className = "translation-wrapper";
+        wrapper.style.display = "flex";
+        wrapper.style.alignItems = "flex-start";
+        wrapper.style.gap = "8px";
+        if (messageBody.parentNode) {
+          messageBody.parentNode.insertBefore(wrapper, messageBody);
+          wrapper.appendChild(messageBody);
+        }
+      }
+      wrapper.appendChild(translationContainer);
+    } else {
+      // Append translation container after the message body (default)
+      if (messageBody.parentNode) {
+        messageBody.parentNode.insertBefore(
+          translationContainer,
+          messageBody.nextSibling
+        );
+      }
     }
 
     // Translate based on mode

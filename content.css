@@ -83,6 +83,12 @@
   overflow-wrap: break-word;
 }
 
+.translation-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;

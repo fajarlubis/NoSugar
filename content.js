@@ -48,10 +48,26 @@
         if (!settings.authCode) {
           showAPIKeyNotification();
         }
-        document.querySelectorAll('.translation-container').forEach((el) => el.remove());
+        document.querySelectorAll('.translation-container').forEach((el) => {
+          const wrapper = el.parentElement;
+          el.remove();
+          if (wrapper && wrapper.classList.contains('translation-wrapper')) {
+            const msg = wrapper.querySelector('.message-body');
+            if (msg) wrapper.parentNode.insertBefore(msg, wrapper);
+            wrapper.remove();
+          }
+        });
         initializeTranslator();
       } else {
-        document.querySelectorAll('.translation-container').forEach((el) => el.remove());
+        document.querySelectorAll('.translation-container').forEach((el) => {
+          const wrapper = el.parentElement;
+          el.remove();
+          if (wrapper && wrapper.classList.contains('translation-wrapper')) {
+            const msg = wrapper.querySelector('.message-body');
+            if (msg) wrapper.parentNode.insertBefore(msg, wrapper);
+            wrapper.remove();
+          }
+        });
       }
       sendResponse({ success: true });
       return true;
