@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
       useCustomServer: false,
       customServerAddress: "",
       customServerPort: "",
+      translationPlacement: "bottom",
     },
     function (data) {
       // Set form values to saved values
@@ -26,6 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
       document.getElementById("serverAddress").value = data.customServerAddress || "";
       document.getElementById("serverPort").value = data.customServerPort || "";
       document.getElementById("customServerFields").style.display = data.useCustomServer ? "block" : "none";
+      document.querySelector(`input[name="translationPlacement"][value="${data.translationPlacement || "bottom"}"]`).checked = true;
     }
   );
 
@@ -76,6 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
       const useCustomServer = document.getElementById("useCustomServer").checked;
       const serverAddress = document.getElementById("serverAddress").value;
       const serverPort = document.getElementById("serverPort").value;
+      const translationPlacement = document.querySelector(
+        'input[name="translationPlacement"]:checked'
+      ).value;
 
       // Show saving status
       const status = document.getElementById("status");
@@ -92,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
             useCustomServer: useCustomServer,
             customServerAddress: serverAddress,
             customServerPort: serverPort,
+            translationPlacement: translationPlacement,
           },
         },
         function (response) {

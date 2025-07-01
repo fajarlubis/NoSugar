@@ -7,6 +7,7 @@
 - 🔄 **Automatic Language Detection:** Detects the original language and translates it to your preferred language.
 - 🛡️ **Privacy First:** No sensitive data is stored; all translations are processed securely.
 - ⚙️ **Customizable Settings:** Set your preferred language and configure translation behavior.
+- 📐 **Flexible Placement:** Choose whether translations appear below or to the right of each message.
 - 🔗 **Seamless Integration:** Integrates directly with the Wire chat interface for a smooth experience.
 
 ## 🖥️ Installation
@@ -25,6 +26,7 @@
 - **Auto-Translate:** Enable or disable automatic message translation.
 - **Highlight Translations:** Toggle highlighted translations for better visibility.
 - **Server Configuration:** Use the default translation server or specify your own address and port. An authorization code is required for all requests.
+- **Translation Placement:** Display translations below each message or to the right of the original bubble.
 
 ## 🐛 Known Issues
 - Occasional delays for lengthy messages.
