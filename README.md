@@ -28,6 +28,33 @@
 - **Server Configuration:** Use the default translation server or specify your own address and port. An authorization code is required for all requests.
 - **Translation Placement:** Display translations below each message or to the right of the original bubble.
 
+### 🌐 Server API
+By default the extension sends translation requests to `https://nosugar.fajarlubis.me` using a POST request. You can run your own server and provide its address and port in the settings. Every request includes an `Authorization` header along with an `X-NoSugar-App` header so the server can identify the client.
+
+Example request body:
+
+```json
+{
+  "text": ["插件的代码发我一下呗 👍"],
+  "target_lang": "EN",
+  "source_lang": "ZH"
+}
+```
+
+Expected response:
+
+```json
+{
+  "translations": [
+    {
+      "detected_source_language": "ZH",
+      "text": "Send me the code for the plugin 👍"
+    }
+  ]
+}
+```
+
+
 ## 🐛 Known Issues
 - Occasional delays for lengthy messages.
 - May require a page refresh if translations stop appearing.
