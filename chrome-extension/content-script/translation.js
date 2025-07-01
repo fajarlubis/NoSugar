@@ -20,7 +20,6 @@ var Translation = (function () {
     authCode: "",
     useCustomServer: false,
     customServerAddress: "",
-    customServerPort: "",
     translationPlacement: "bottom",
   };
 
@@ -34,7 +33,6 @@ var Translation = (function () {
           authCode: "",
           useCustomServer: false,
           customServerAddress: "",
-          customServerPort: "",
           translationPlacement: "bottom",
         },
         (data) => {
@@ -93,11 +91,10 @@ var Translation = (function () {
   // Build the server URL depending on user settings
   function getServerURL() {
     if (settings.useCustomServer && settings.customServerAddress) {
-      const port = settings.customServerPort ? `:${settings.customServerPort}` : "";
       const prefix = settings.customServerAddress.startsWith("http")
         ? settings.customServerAddress
         : `http://${settings.customServerAddress}`;
-      return `${prefix}${port}`;
+      return prefix;
     }
     return DEFAULT_SERVER_URL;
   }

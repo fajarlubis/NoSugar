@@ -63,7 +63,6 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
         authCode: "",
         useCustomServer: false,
         customServerAddress: "",
-        customServerPort: "",
         translationPlacement: "bottom",
       },
       (settings) => {
