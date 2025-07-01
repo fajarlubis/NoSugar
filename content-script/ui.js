@@ -48,9 +48,14 @@ var UI = (function () {
     translationContainer.className = "translation-container";
     translationContainer.style.marginTop = "8px";
     translationContainer.style.padding = "6px 8px";
-    translationContainer.style.backgroundColor = "#f5f7f9";
-    translationContainer.style.borderRadius = "4px";
     translationContainer.style.fontSize = "13px";
+
+    // Try to mirror the message bubble's style
+    const computed = window.getComputedStyle(messageBody);
+    translationContainer.style.backgroundColor =
+      computed.backgroundColor || "#f5f7f9";
+    translationContainer.style.borderRadius =
+      computed.borderRadius || "4px";
     translationContainer.style.borderLeft = "3px solid #4285f4";
 
     // Add initial loading indicator
