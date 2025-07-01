@@ -31,19 +31,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   );
 
-  const authCodeInput = document.getElementById("authCode");
-  const copyButton = document.getElementById("copyAuthCode");
-
   const customCheckbox = document.getElementById("useCustomServer");
   const customFields = document.getElementById("customServerFields");
 
   customCheckbox.addEventListener("change", function () {
     customFields.style.display = this.checked ? "block" : "none";
-  });
-
-  copyButton.addEventListener("click", function (e) {
-    e.preventDefault();
-    navigator.clipboard.writeText(authCodeInput.value);
   });
 
   // Form submission handler
