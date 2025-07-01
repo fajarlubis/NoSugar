@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: nosugar-secret
+type: Opaque
+stringData:
+  TRANSLATION_ENGINE: deepl
+  DEEPL_AUTH_KEY: "change_me"
+  GOOGLE_API_KEY: "change_me"
+  CLIENT_API_KEY: "change_me"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nosugar-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nosugar-api
+  template:
+    metadata:
+      labels:
+        app: nosugar-api
+    spec:
+      containers:
+      - name: api
+        image: ghcr.io/fajarlubis/nosugar:latest
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - secretRef:
+            name: nosugar-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nosugar-api
+spec:
+  selector:
+    app: nosugar-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
