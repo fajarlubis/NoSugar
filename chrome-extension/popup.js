@@ -31,11 +31,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   );
 
-  // Toggle password visibility
-  const toggleButton = document.querySelector(".toggle-password");
   const authCodeInput = document.getElementById("authCode");
-  const eyeIcon = document.getElementById("eye-icon");
-  const eyeSlashIcon = document.getElementById("eye-slash-icon");
+  const copyButton = document.getElementById("copyAuthCode");
 
   const customCheckbox = document.getElementById("useCustomServer");
   const customFields = document.getElementById("customServerFields");
@@ -44,20 +41,9 @@ document.addEventListener("DOMContentLoaded", function () {
     customFields.style.display = this.checked ? "block" : "none";
   });
 
-  toggleButton.addEventListener("click", function (e) {
-    // Prevent any potential form submission
+  copyButton.addEventListener("click", function (e) {
     e.preventDefault();
-
-    // Toggle input type between "password" and "text"
-    if (authCodeInput.type === "password") {
-      authCodeInput.type = "text";
-      eyeIcon.style.display = "none";
-      eyeSlashIcon.style.display = "block";
-    } else {
-      authCodeInput.type = "password";
-      eyeIcon.style.display = "block";
-      eyeSlashIcon.style.display = "none";
-    }
+    navigator.clipboard.writeText(authCodeInput.value);
   });
 
   // Form submission handler
@@ -184,20 +170,16 @@ function connectWebSocket(settings) {
     ws = new WebSocket(wsUrl);
     const el = document.getElementById("wsStatus");
     ws.onopen = function () {
-      el.textContent = "Server Connected";
-      el.style.color = "#0f9d58";
+      el.classList.add("connected");
     };
     ws.onclose = function () {
-      el.textContent = "Server Disconnected";
-      el.style.color = "#d93025";
+      el.classList.remove("connected");
     };
     ws.onerror = function () {
-      el.textContent = "Server Disconnected";
-      el.style.color = "#d93025";
+      el.classList.remove("connected");
     };
   } catch (e) {
     const el = document.getElementById("wsStatus");
-    el.textContent = "Server Disconnected";
-    el.style.color = "#d93025";
+    el.classList.remove("connected");
   }
 }

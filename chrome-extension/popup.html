@@ -15,7 +15,7 @@
 
         header {
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             margin-bottom: 10px;
         }
 
@@ -29,6 +29,27 @@
             margin: 0;
             font-size: 18px;
         }
+        .version {
+            font-size: 12px;
+            color: #666;
+            margin-left: 8px;
+        }
+        .subtitle {
+            margin: 2px 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #d93025;
+            margin-left: 4px;
+        }
+        .status-dot.connected {
+            background-color: #0f9d58;
+        }
 
         .option-group {
             margin-bottom: 15px;
@@ -40,20 +61,31 @@
             display: block;
         }
 
-        .radio-group {
+        .button-group {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-left: 5px;
+            margin-top: 5px;
         }
-
-        .radio-option {
-            display: flex;
-            align-items: center;
+        .button-group input[type="radio"] {
+            display: none;
         }
-
-        .radio-option input {
-            margin-right: 8px;
+        .button-group label {
+            flex: 1;
+            border: 1px solid #ccc;
+            padding: 6px 8px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+        }
+        .button-group label:not(:last-child) {
+            border-right: none;
+        }
+        .button-group input[type="radio"]:checked + label {
+            background-color: #00b0ff;
+            color: #fff;
+        }
+        .button-group label svg {
+            margin-right: 4px;
+            vertical-align: middle;
         }
 
         label {
@@ -80,7 +112,19 @@
             border-radius: 4px;
         }
 
-        .toggle-password {
+        #serverAddress {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #customServerFields {
+            margin-top: 8px;
+        }
+
+        .copy-button {
             position: absolute;
             right: 10px;
             top: 50%;
@@ -117,9 +161,7 @@
         }
 
         #wsStatus {
-            margin-top: 5px;
-            text-align: center;
-            font-weight: bold;
+            display: none;
         }
 
         .note {
@@ -136,57 +178,83 @@
 <body>
     <header>
         <img src="icons/32x32.png" alt="Wire Icon">
-        <h2>No Sugar Translator<span style="font-size: 12px; color: #666; margin-left: 8px;">v2</span></h2>
+        <div>
+            <h2>No Sugar Translator<span class="version">v2</span><span id="wsStatus" class="status-dot"></span></h2>
+            <p class="subtitle">Pure Translation. No Sugar Added.</p>
+        </div>
     </header>
 
     <form id="settingsForm">
         <div class="option-group">
             <span class="option-title">Translation Mode:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="auto" name="translationMode" value="auto" checked>
-                    <label for="auto">Auto-detect and translate to selected language</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="manual" name="translationMode" value="manual">
-                    <label for="manual">Manually translate when clicking messages</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="off" name="translationMode" value="off">
-                    <label for="off">Turn off translation</label>
-                </div>
+            <div class="button-group">
+                <input type="radio" id="auto" name="translationMode" value="auto" checked>
+                <label for="auto">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="8" width="18" height="10" rx="2"/>
+                        <path d="M8 16v2h8v-2"/>
+                        <circle cx="8" cy="13" r="1"/>
+                        <circle cx="16" cy="13" r="1"/>
+                        <path d="M12 2v4"/>
+                    </svg>
+                    Auto
+                </label>
+
+                <input type="radio" id="manual" name="translationMode" value="manual">
+                <label for="manual">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M7 11V5a1 1 0 0 1 2 0v6"/>
+                        <path d="M11 11V3a1 1 0 0 1 2 0v8"/>
+                        <path d="M15 11V7a1 1 0 0 1 2 0v9a4 4 0 0 1-8 0v-5"/>
+                    </svg>
+                    Manual
+                </label>
+
+                <input type="radio" id="off" name="translationMode" value="off">
+                <label for="off">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2v10"/>
+                        <path d="M5.5 5.5a8 8 0 1 0 13 0"/>
+                    </svg>
+                    Off
+                </label>
             </div>
         </div>
 
         <div class="option-group">
             <span class="option-title">Target Language:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="english" name="targetLanguage" value="en" checked>
-                    <label for="english">English</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="chinese" name="targetLanguage" value="zh">
-                    <label for="chinese">Chinese</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="indonesian" name="targetLanguage" value="id">
-                    <label for="indonesian">Indonesian</label>
-                </div>
+            <div class="button-group">
+                <input type="radio" id="english" name="targetLanguage" value="en" checked>
+                <label for="english">EN</label>
+
+                <input type="radio" id="chinese" name="targetLanguage" value="zh">
+                <label for="chinese">中</label>
+
+                <input type="radio" id="indonesian" name="targetLanguage" value="id">
+                <label for="indonesian">ID</label>
             </div>
         </div>
 
         <div class="option-group">
             <span class="option-title">Translation Placement:</span>
-            <div class="radio-group">
-                <div class="radio-option">
-                    <input type="radio" id="place-bottom" name="translationPlacement" value="bottom" checked>
-                    <label for="place-bottom">Below message</label>
-                </div>
-                <div class="radio-option">
-                    <input type="radio" id="place-right" name="translationPlacement" value="right">
-                    <label for="place-right">Right of message</label>
-                </div>
+            <div class="button-group">
+                <input type="radio" id="place-bottom" name="translationPlacement" value="bottom" checked>
+                <label for="place-bottom">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="6" y="3" width="12" height="12" rx="2"/>
+                        <path d="M3 21h18"/>
+                    </svg>
+                    Bottom
+                </label>
+
+                <input type="radio" id="place-right" name="translationPlacement" value="right">
+                <label for="place-right">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="6" width="12" height="12" rx="2"/>
+                        <path d="M21 3v18"/>
+                    </svg>
+                    Right
+                </label>
             </div>
         </div>
 
@@ -194,21 +262,17 @@
             <span class="option-title">Server Authorization Code:</span>
             <div class="api-key-container">
                 <input type="password" id="authCode" name="authCode" placeholder="Enter authorization code">
-                <button type="button" class="toggle-password" title="Show/Hide Code">
-                    <svg width="16" height="16" viewBox="0 0 16 16" id="eye-icon">
-                        <path
-                            d="M8 3C4.5 3 1.5 5.7 0 10c1.5 4.3 4.5 7 8 7s6.5-2.7 8-7c-1.5-4.3-4.5-7-8-7zm0 12c-2.7 0-5.1-2.2-6.4-5.8 1.3-3.6 3.7-5.2 6.4-5.2s5.1 1.6 6.4 5.2c-1.3 3.6-3.7 5.8-6.4 5.8zm0-10a4 4 0 100 8 4 4 0 000-8zm0 6.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" />
-                    </svg>
-                    <svg width="16" height="16" viewBox="0 0 16 16" id="eye-slash-icon" style="display: none;">
-                        <path
-                            d="M14.53 1.47a.75.75 0 00-1.06 0L11.8 3.14C10.69 2.4 9.38 2 8 2 4.5 2 1.5 4.7 0 9c.73 2.1 1.83 3.76 3.18 4.96l-1.71 1.71a.75.75 0 101.06 1.06l12-12a.75.75 0 000-1.06zM8 14c-2.7 0-5.1-2.2-6.4-5.8.54-1.49 1.31-2.68 2.25-3.5L5.17 6C4.44 6.55 4 7.5 4 8.5c0 2.21 1.79 4 4 4 1 0 1.95-.44 2.5-1.17l1.3 1.32c-.82.94-2.01 1.7-3.8 2.35zM4.85 3.44C5.77 2.9 6.83 2.5 8 2.5c2.7 0 5.1 1.6 6.4 5.2-.54 1.49-1.31 2.68-2.25 3.5L4.85 3.44zM11.83 10c.73-.45 1.17-1.4 1.17-2.4 0-2.21-1.79-4-4-4-1 0-1.95.44-2.5 1.17L11.83 10z" />
+                <button type="button" id="copyAuthCode" class="copy-button" title="Copy">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="9" y="9" width="13" height="13" rx="2"/>
+                        <rect x="3" y="3" width="13" height="13" rx="2"/>
                     </svg>
                 </button>
             </div>
-            <div style="margin-top:10px;">
+            <div>
                 <label><input type="checkbox" id="useCustomServer"> Use custom server</label>
-                <div id="customServerFields" style="display:none;margin-top:8px;">
-                    <input type="text" id="serverAddress" placeholder="Server address" style="width:100%;margin-bottom:5px;">
+                <div id="customServerFields" style="display:none;">
+                    <input type="text" id="serverAddress" placeholder="Server address">
                 </div>
             </div>
             <div style="font-size: 12px; color: #d93025; margin-top: 5px;">
@@ -220,7 +284,6 @@
     </form>
 
     <div id="status"></div>
-    <div id="wsStatus"></div>
 
     <div class="note">
         <p>Translation is performed in the background as you scroll through messages. No need to click anything if auto
