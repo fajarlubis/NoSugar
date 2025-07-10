@@ -87,3 +87,6 @@ For questions or suggestions, please open an [issue](https://github.com/fajarlub
 ---
 
 Enjoy chatting without language barriers with **NoSugar**! 🍬🚫
+
+
+For architecture details see [docs/TECHNICAL_DOCUMENTATION.md](docs/TECHNICAL_DOCUMENTATION.md).
